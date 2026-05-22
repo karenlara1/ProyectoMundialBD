@@ -5,6 +5,7 @@ import co.edu.uniquindio.modelo.Bitacora;
 
 import javax.swing.*;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class BitacoraDAO {
@@ -72,23 +73,7 @@ public class BitacoraDAO {
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                Bitacora bitacora = new Bitacora();
-
-                bitacora.setIdBitacora(rs.getInt("id_bitacora"));
-                bitacora.setIdUsuario(rs.getInt("id_usuario"));
-                bitacora.setUsername(rs.getString("username"));
-
-                Timestamp ingreso = rs.getTimestamp("fecha_hora_ingreso");
-                Timestamp salida = rs.getTimestamp("fecha_hora_salida");
-
-                if (ingreso != null) {
-                    bitacora.setFechaHoraIngreso(ingreso.toLocalDateTime());
-                }
-
-                if (salida != null) {
-                    bitacora.setFechaHoraSalida(salida.toLocalDateTime());
-                }
-
+                Bitacora bitacora = mapearBitacora(rs);
                 lista.add(bitacora);
             }
 
@@ -100,5 +85,66 @@ public class BitacoraDAO {
         }
 
         return lista;
+    }
+
+    public List<Bitacora> listarBitacoraPorFechaHora(LocalDateTime fechaHoraInicio, LocalDateTime fechaHoraFin) {
+        List<Bitacora> lista = new ArrayList<>();
+
+        String sql = """
+            SELECT b.id_bitacora,
+                   b.id_usuario,
+                   u.username,
+                   b.fecha_hora_ingreso,
+                   b.fecha_hora_salida
+            FROM bitacora b
+            INNER JOIN usuario u ON b.id_usuario = u.id_usuario
+            WHERE b.fecha_hora_ingreso >= ?
+              AND b.fecha_hora_salida <= ?
+              AND b.fecha_hora_salida IS NOT NULL
+            ORDER BY b.fecha_hora_ingreso DESC
+            """;
+
+        try (Connection conexion = ConexionOracle.conectar();
+             PreparedStatement ps = conexion.prepareStatement(sql)) {
+
+            ps.setTimestamp(1, Timestamp.valueOf(fechaHoraInicio));
+            ps.setTimestamp(2, Timestamp.valueOf(fechaHoraFin));
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Bitacora bitacora = mapearBitacora(rs);
+                    lista.add(bitacora);
+                }
+            }
+
+        } catch (SQLException exception) {
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Error al consultar la bitácora por fecha y hora: " + exception.getMessage()
+            );
+        }
+
+        return lista;
+    }
+
+    private Bitacora mapearBitacora(ResultSet rs) throws SQLException {
+        Bitacora bitacora = new Bitacora();
+
+        bitacora.setIdBitacora(rs.getInt("id_bitacora"));
+        bitacora.setIdUsuario(rs.getInt("id_usuario"));
+        bitacora.setUsername(rs.getString("username"));
+
+        Timestamp ingreso = rs.getTimestamp("fecha_hora_ingreso");
+        Timestamp salida = rs.getTimestamp("fecha_hora_salida");
+
+        if (ingreso != null) {
+            bitacora.setFechaHoraIngreso(ingreso.toLocalDateTime());
+        }
+
+        if (salida != null) {
+            bitacora.setFechaHoraSalida(salida.toLocalDateTime());
+        }
+
+        return bitacora;
     }
 }

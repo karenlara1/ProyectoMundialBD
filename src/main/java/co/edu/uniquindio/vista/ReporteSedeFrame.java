@@ -51,6 +51,7 @@ public class ReporteSedeFrame extends JFrame {
         cbReporte.addItem("Equipo más costoso que juega en cada país anfitrión");
         cbReporte.addItem("Países y partidos que se jugarán en cada país anfitrión");
         cbReporte.addItem("Cantidad de partidos por país anfitrión");
+        cbReporte.addItem("Países que jugarán en cada país anfitrión");
         add(cbReporte);
 
         JLabel lblEstadio = new JLabel("Estadio:");
@@ -115,6 +116,10 @@ public class ReporteSedeFrame extends JFrame {
 
             case 3:
                 consultarCantidadPartidosPorPaisAnfitrion();
+                break;
+
+            case 4:
+                consultarPaisesQueJueganPorPaisAnfitrion();
                 break;
 
             default:
@@ -199,6 +204,21 @@ public class ReporteSedeFrame extends JFrame {
         prepararTabla(columnas);
 
         List<Object[]> resultados = reporteSedeDAO.obtenerCantidadPartidosPorPaisAnfitrion();
+
+        for (Object[] fila : resultados) {
+            modeloTabla.addRow(fila);
+        }
+    }
+
+    private void consultarPaisesQueJueganPorPaisAnfitrion() {
+        String[] columnas = {
+                "País Anfitrión",
+                "País que Juega"
+        };
+
+        prepararTabla(columnas);
+
+        List<Object[]> resultados = reporteSedeDAO.obtenerPaisesQueJueganPorPaisAnfitrion();
 
         for (Object[] fila : resultados) {
             modeloTabla.addRow(fila);

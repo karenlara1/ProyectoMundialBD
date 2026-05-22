@@ -207,4 +207,56 @@ public class ReporteSedeDAO {
 
         return resultados;
     }
+
+    public List<Object[]> obtenerPaisesQueJueganPorPaisAnfitrion() {
+        List<Object[]> resultados = new ArrayList<>();
+
+        String sql = """
+                SELECT DISTINCT pais_sede.nombre AS pais_anfitrion,
+                                pais_equipo.nombre AS pais_que_juega
+                FROM partido p
+                INNER JOIN estadio es ON p.id_estadio = es.id_estadio
+                INNER JOIN ciudad ci ON es.id_ciudad = ci.id_ciudad
+                INNER JOIN pais pais_sede ON ci.id_pais = pais_sede.id_pais
+                INNER JOIN equipo eq_local ON p.id_equipo_local = eq_local.id_equipo
+                INNER JOIN pais pais_local ON eq_local.id_pais = pais_local.id_pais
+                INNER JOIN equipo eq_visitante ON p.id_equipo_visitante = eq_visitante.id_equipo
+                INNER JOIN pais pais_visitante ON eq_visitante.id_pais = pais_visitante.id_pais
+                INNER JOIN (
+                    SELECT p1.id_partido,
+                           eq1.id_pais
+                    FROM partido p1
+                    INNER JOIN equipo eq1 ON p1.id_equipo_local = eq1.id_equipo
+                    
+                    UNION
+                    
+                    SELECT p2.id_partido,
+                           eq2.id_pais
+                    FROM partido p2
+                    INNER JOIN equipo eq2 ON p2.id_equipo_visitante = eq2.id_equipo
+                ) paises_partido ON p.id_partido = paises_partido.id_partido
+                INNER JOIN pais pais_equipo ON paises_partido.id_pais = pais_equipo.id_pais
+                WHERE pais_sede.es_anfitrion = 'S'
+                ORDER BY pais_sede.nombre, pais_equipo.nombre
+                """;
+
+        try (Connection conexion = ConexionOracle.conectar();
+             PreparedStatement ps = conexion.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Object[] fila = {
+                        rs.getString("pais_anfitrion"),
+                        rs.getString("pais_que_juega")
+                };
+
+                resultados.add(fila);
+            }
+
+        } catch (SQLException exception) {
+            System.out.println("Error al consultar países que juegan por país anfitrión: " + exception.getMessage());
+        }
+
+        return resultados;
+    }
 }
