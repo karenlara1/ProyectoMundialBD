@@ -55,6 +55,13 @@ public class MenuPrincipalFrame extends JFrame {
             frame.setVisible(true);
         });
 
+        btnCrud.addActionListener(e -> abrirMenuCrud());
+
+        btnConsultas.addActionListener(e -> {
+            ReporteFrame frame = new ReporteFrame();
+            frame.setVisible(true);
+        });
+
         btnBitacora.addActionListener(e -> {
             BitacoraFrame frame = new BitacoraFrame();
             frame.setVisible(true);
@@ -83,6 +90,63 @@ public class MenuPrincipalFrame extends JFrame {
             btnCrud.setEnabled(false);
             btnConsultas.setEnabled(true);
             btnBitacora.setEnabled(false);
+        }
+    }
+
+    private void abrirMenuCrud() {
+        String[] opciones = {
+                "Confederaciones",
+                "Grupos",
+                "Equipos",
+                "Jugadores",
+                "Directores Técnicos"
+        };
+
+        String opcionSeleccionada = (String) JOptionPane.showInputDialog(
+                this,
+                "Selecciona el módulo que deseas gestionar:",
+                "CRUD Datos Mundial",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                opciones,
+                opciones[0]
+        );
+
+        if (opcionSeleccionada != null) {
+            abrirFrameCrud(opcionSeleccionada);
+        }
+    }
+
+    private void abrirFrameCrud(String opcionSeleccionada) {
+        switch (opcionSeleccionada) {
+            case "Confederaciones":
+                ConfederacionFrame confederacionFrame = new ConfederacionFrame();
+                confederacionFrame.setVisible(true);
+                break;
+
+            case "Grupos":
+                GrupoFrame grupoFrame = new GrupoFrame();
+                grupoFrame.setVisible(true);
+                break;
+
+            case "Equipos":
+                EquipoFrame equipoFrame = new EquipoFrame();
+                equipoFrame.setVisible(true);
+                break;
+
+            case "Jugadores":
+                JugadorFrame jugadorFrame = new JugadorFrame();
+                jugadorFrame.setVisible(true);
+                break;
+
+            case "Directores Técnicos":
+                DirectorTecnicoFrame directorTecnicoFrame = new DirectorTecnicoFrame();
+                directorTecnicoFrame.setVisible(true);
+                break;
+
+            default:
+                JOptionPane.showMessageDialog(this, "Opción no válida.");
+                break;
         }
     }
 
