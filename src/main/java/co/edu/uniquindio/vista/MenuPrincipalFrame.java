@@ -57,10 +57,7 @@ public class MenuPrincipalFrame extends JFrame {
 
         btnCrud.addActionListener(e -> abrirMenuCrud());
 
-        btnConsultas.addActionListener(e -> {
-            ReporteFrame frame = new ReporteFrame();
-            frame.setVisible(true);
-        });
+        btnConsultas.addActionListener(e -> abrirMenuReportes());
 
         btnBitacora.addActionListener(e -> {
             BitacoraFrame frame = new BitacoraFrame();
@@ -99,7 +96,11 @@ public class MenuPrincipalFrame extends JFrame {
                 "Grupos",
                 "Equipos",
                 "Jugadores",
-                "Directores Técnicos"
+                "Directores Técnicos",
+                "Países",
+                "Ciudades",
+                "Estadios",
+                "Partidos"
         };
 
         String opcionSeleccionada = (String) JOptionPane.showInputDialog(
@@ -142,6 +143,65 @@ public class MenuPrincipalFrame extends JFrame {
             case "Directores Técnicos":
                 DirectorTecnicoFrame directorTecnicoFrame = new DirectorTecnicoFrame();
                 directorTecnicoFrame.setVisible(true);
+                break;
+
+            case "Países":
+                PaisFrame paisFrame = new PaisFrame();
+                paisFrame.setVisible(true);
+                break;
+
+            case "Ciudades":
+                CiudadFrame ciudadFrame = new CiudadFrame();
+                ciudadFrame.setVisible(true);
+                break;
+
+            case "Estadios":
+                EstadioFrame estadioFrame = new EstadioFrame();
+                estadioFrame.setVisible(true);
+                break;
+
+            case "Partidos":
+                PartidoFrame partidoFrame = new PartidoFrame();
+                partidoFrame.setVisible(true);
+                break;
+
+            default:
+                JOptionPane.showMessageDialog(this, "Opción no válida.");
+                break;
+        }
+    }
+
+    private void abrirMenuReportes() {
+        String[] opciones = {
+                "Reportes de equipos, jugadores y confederaciones",
+                "Reportes de sedes, estadios y partidos"
+        };
+
+        String opcionSeleccionada = (String) JOptionPane.showInputDialog(
+                this,
+                "Selecciona el tipo de reporte que deseas consultar:",
+                "Consultas y Reportes",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                opciones,
+                opciones[0]
+        );
+
+        if (opcionSeleccionada != null) {
+            abrirFrameReporte(opcionSeleccionada);
+        }
+    }
+
+    private void abrirFrameReporte(String opcionSeleccionada) {
+        switch (opcionSeleccionada) {
+            case "Reportes de equipos, jugadores y confederaciones":
+                ReporteFrame reporteFrame = new ReporteFrame();
+                reporteFrame.setVisible(true);
+                break;
+
+            case "Reportes de sedes, estadios y partidos":
+                ReporteSedeFrame reporteSedeFrame = new ReporteSedeFrame();
+                reporteSedeFrame.setVisible(true);
                 break;
 
             default:

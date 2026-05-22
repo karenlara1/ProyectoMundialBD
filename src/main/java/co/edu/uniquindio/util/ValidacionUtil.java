@@ -1,12 +1,14 @@
 package co.edu.uniquindio.util;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 public class ValidacionUtil {
 
     private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final DateTimeFormatter FORMATO_HORA = DateTimeFormatter.ofPattern("HH:mm");
 
     private ValidacionUtil() {
     }
@@ -86,5 +88,78 @@ public class ValidacionUtil {
         String valor = grupo.trim().toUpperCase();
 
         return valor.matches("[A-L]");
+    }
+
+    // ------------------------------------------------------------
+    // VALIDACIONES NUEVAS PARA LA PARTE DE PAÍSES, CIUDADES,
+    // ESTADIOS Y PARTIDOS
+    // ------------------------------------------------------------
+
+    public static boolean esHoraValida(String texto) {
+        if (estaVacio(texto)) {
+            return false;
+        }
+
+        try {
+            LocalTime.parse(texto.trim(), FORMATO_HORA);
+            return true;
+        } catch (DateTimeParseException e) {
+            return false;
+        }
+    }
+
+    public static LocalTime convertirHora(String texto) {
+        return LocalTime.parse(texto.trim(), FORMATO_HORA);
+    }
+
+    public static boolean fechaNoPasada(LocalDate fecha) {
+        return fecha != null && !fecha.isBefore(LocalDate.now());
+    }
+
+    public static boolean esCapacidadValida(int capacidad) {
+        return capacidad > 0;
+    }
+
+    public static boolean esCapacidadEstadioRealista(int capacidad) {
+        return capacidad >= 10000 && capacidad <= 120000;
+    }
+
+    public static boolean esGolesValido(int goles) {
+        return goles >= 0;
+    }
+
+    public static boolean equiposDiferentes(int idEquipoLocal, int idEquipoVisitante) {
+        return idEquipoLocal != idEquipoVisitante;
+    }
+
+    public static boolean esEstadoPartidoValido(String estado) {
+        if (estaVacio(estado)) {
+            return false;
+        }
+
+        String valor = estado.trim().toUpperCase();
+
+        return valor.equals("PROGRAMADO")
+                || valor.equals("EN JUEGO")
+                || valor.equals("FINALIZADO")
+                || valor.equals("CANCELADO");
+    }
+
+    public static boolean esAnfitrionValido(String valor) {
+        if (estaVacio(valor)) {
+            return false;
+        }
+
+        String texto = valor.trim().toUpperCase();
+
+        return texto.equals("S") || texto.equals("N");
+    }
+
+    public static boolean longitudMaxima(String texto, int maximo) {
+        if (texto == null) {
+            return false;
+        }
+
+        return texto.trim().length() <= maximo;
     }
 }
