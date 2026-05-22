@@ -30,6 +30,8 @@ public class UsuarioDAO {
                 usuario.setPassword(rs.getString("password"));
                 usuario.setRol(rs.getString("rol"));
                 usuario.setEstado(rs.getString("estado"));
+
+                return usuario;
             }
         } catch (SQLException exception){
             System.out.println("Error en el inicio de sesión: " + exception.getMessage());

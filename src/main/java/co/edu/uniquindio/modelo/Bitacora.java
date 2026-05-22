@@ -6,6 +6,7 @@ public class Bitacora {
 
     private int idBitacora;
     private int idUsuario;
+    private String username;
     private LocalDateTime fechaHoraIngreso;
     private LocalDateTime fechaHoraSalida;
 
@@ -15,6 +16,10 @@ public class Bitacora {
 
     public int getIdUsuario() {
         return idUsuario;
+    }
+
+    public String getUsername(){
+        return username;
     }
 
     public LocalDateTime getFechaHoraIngreso() {
@@ -31,6 +36,10 @@ public class Bitacora {
 
     public void setIdUsuario(int idUsuario) {
         this.idUsuario = idUsuario;
+    }
+
+    public void setUsername (String username){
+        this.username = username;
     }
 
     public void setFechaHoraIngreso(LocalDateTime fechaHoraIngreso) {
